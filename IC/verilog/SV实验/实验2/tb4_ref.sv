@@ -137,7 +137,7 @@ package chnl_pkg;
       $display("%s finished testing DUT", this.name);
     endtask
     function void set_interface(virtual chnl_intf ch0_vif, virtual chnl_intf ch1_vif, virtual chnl_intf ch2_vif);
-      agent[0].set_interface(ch0_vif);
+      agent[0].set_interface(ch0_vif); // test的环境是裸露在tb中的，因此需要在test中加入接口
       agent[1].set_interface(ch1_vif);
       agent[2].set_interface(ch2_vif);
     endfunction
@@ -274,7 +274,7 @@ module tb4_ref;
 
     // USER TODO 4.4
     // assign the interface handle to each chnl_initiator objects
-    basic_test.set_interface(chnl0_if, chnl1_if, chnl2_if);
+    basic_test.set_interface(chnl0_if, chnl1_if, chnl2_if); // 除了root_test以外，其他三个test的run和interface均在外部完成。
     burst_test.set_interface(chnl0_if, chnl1_if, chnl2_if);
     fifo_full_test.set_interface(chnl0_if, chnl1_if, chnl2_if);
 
