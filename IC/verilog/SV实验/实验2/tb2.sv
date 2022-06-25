@@ -176,4 +176,3 @@ module tb2;
   chnl_generator chnl2_gen();
 
 endmodule
-

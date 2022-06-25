@@ -23,7 +23,7 @@ class chnl_initiator;
   local int idle_cycles;
   virtual chnl_intf intf;
 
-  function new(string name = "chnl_initiator");
+  function new(string name = "chnl_initiator");  // class需要new创建实例，这一步相当于module中的set_name
     this.name = name;
     this.idle_cycles = 1;
   endfunction
@@ -32,7 +32,7 @@ class chnl_initiator;
     this.idle_cycles = n;
   endfunction
 
-  function void set_name(string s);
+  function void set_name(string s); // 没用上？
     this.name = s;
   endfunction
 
@@ -69,22 +69,22 @@ endclass
 
 // USER TODO 3.4
 // check if the object use is correct?
-class chnl_generator;  // 对应chnl_trans
-  chnl_trans trans[$];  
+class chnl_generator;  
+  chnl_trans trans[$];  //类似chnl_arr,能不能直接写成chnl_trans t[$],
   int num;
-  int id;
+  int id; 
   chnl_trans t;
   function new(int n);
     this.id = n;
     this.num = 0;
   endfunction
-  function chnl_trans get_trans();   
-    t = new();
+  function chnl_trans get_trans();   // module中的get_data类似
+    t = new();  // 创建一个t来接受数据
     t.data = 'h00C0_0000 + (this.id<<16) + this.num;
     t.id = this.id;
     t.num = this.num;
     this.num++;
-    this.trans.push_back(t);
+    this.trans.push_back(t);  // push_bcak函数连接了trans和t
     return t;  // 没看懂TODO
   endfunction
 endclass
@@ -135,9 +135,10 @@ module tb3_ref;
   chnl_intf chnl1_if(.*);
   chnl_intf chnl2_if(.*);
 
-  chnl_initiator chnl0_init;  //句柄的声明
+  chnl_initiator chnl0_init;  //声明对象
   chnl_initiator chnl1_init;
   chnl_initiator chnl2_init;
+
   chnl_generator chnl0_gen;
   chnl_generator chnl1_gen;
   chnl_generator chnl2_gen;
@@ -145,8 +146,8 @@ module tb3_ref;
   initial begin 
     // USER TODO 3.1
     // instantiate the components chn0/1/2_init chnl0/1/2_gen
-	chnl0_init = new("chnl0_init");  // 创建一个同名的实例   注意，Class中创建实例必须通过new
-	chnl1_init = new("chnl1_init");
+	chnl0_init = new("chnl0_init");  // 对象创建一个同名的实例,注意，Class中创建实例必须通过new
+	chnl1_init = new("chnl1_init");  // module不需要实例化，也就是不需要new
 	chnl2_init = new("chnl2_init");
 	chnl0_gen = new(0); 
 	chnl1_gen = new(1);

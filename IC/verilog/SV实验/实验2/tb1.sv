@@ -117,7 +117,7 @@ module tb1;  // 例化
     @(posedge rstn);
     repeat(5) @(posedge clk);
     repeat(100) begin
-      chnl0_init.chnl_write(chnl0_gen.get_data());      //此处发送了信号
+      chnl0_init.chnl_write(chnl0_gen.get_data());      //此处调用了不同id的generator
     end
     chnl0_init.chnl_idle(); 
   end
@@ -140,8 +140,8 @@ module tb1;  // 例化
     chnl2_init.chnl_idle(); 
   end
   
-  chnl_intf chnl0_if(.*);      // interface和module都需要例化，tb1与mcdt已经在上面例化了。这里的chnl0_if和下面的chnl_init一样，都是自己定义的名字。
-  chnl_intf chnl1_if(.*);
+  chnl_intf chnl0_if(.*);      // interface和module都需要例化，tb1与mcdt已经在上面例化了。这里的chnl0_if和下面的chnl_init一样，都是自己定义的名字。括号内的内容为inout
+  chnl_intf chnl1_if(.*);     // 在python中，chnl_if相当于一个实参
   chnl_intf chnl2_if(.*);
 
   chnl_initiator chnl0_init(chnl0_if);  // 和实验1 tb4一样，将initiator通过接口例化DUT，此处对initiator连接了interface的实例，109行可以直接调用。  此处使程序运行
@@ -152,5 +152,7 @@ module tb1;  // 例化
   chnl_generator chnl1_gen();
   chnl_generator chnl2_gen();   // 此处创建一个generator的句柄，调用genrator来帮助initiator拿到数据。
 
+
+//  TODO!  SV中，模块(module)、program、interface的使用方式和别的语言中的类相似
 endmodule
 

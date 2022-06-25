@@ -12,7 +12,7 @@ interface chnl_intf(input clk, input rstn);
   endclocking
 endinterface
 
-class chnl_trans;
+class chnl_trans; // 类里面不能直接例化接口
   int data;
   int id;
   int num;
@@ -21,8 +21,8 @@ endclass
 class chnl_initiator;
   local string name;
   local int idle_cycles;
-  virtual chnl_intf intf;   // 在类里面，接口不能再通过参数的形式进行传递，因为clsss没有端口。声明接口指针必须加vritual
-
+  virtual chnl_intf intf;   // 在类里面，接口不能再通过形参的形式进行传递，因为clsss没有端口。声明接口指针必须加vritual
+                            // 这一步相当于module 中的(chnl_intf inft)
   function new(string name = "chnl_initiator");
     this.name = name;
     this.idle_cycles = 1;

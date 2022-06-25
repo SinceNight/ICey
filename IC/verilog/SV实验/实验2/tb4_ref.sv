@@ -105,7 +105,7 @@ package chnl_pkg;
       init.set_interface(vif);
     endfunction
     task run();   //通过agent运行
-      repeat(this.ntrans) this.init.chnl_write(this.gen.get_trans());
+      repeat(this.ntrans) this.init.chnl_write(this.gen.get_trans()); // trans代表loop次数
       this.init.chnl_idle(); // set idle after all data sent out
     endtask
   endclass: chnl_agent
@@ -115,7 +115,7 @@ package chnl_pkg;
     protected string name;
     function new(int ntrans = 100, string name = "chnl_root_test");
       foreach(agent[i]) begin
-        this.agent[i] = new($sformatf("chnl_agent%0d",i), i, ntrans);
+        this.agent[i] = new($sformatf("chnl_agent%0d",i), i, ntrans); //调用了agent中的new函数
       end
       this.name = name;
       $display("%s instantiate objects", this.name);
@@ -142,26 +142,16 @@ package chnl_pkg;
       agent[2].set_interface(ch2_vif);
     endfunction
   endclass
-
-  // each channel send data with idle_cycles inside [1:3]
-  // each channel send out 200 data
-  // then to finish the test
   class chnl_basic_test extends chnl_root_test;
     function new(int ntrans = 200, string name = "chnl_basic_test");
       super.new(ntrans, name);
       foreach(agent[i]) begin
-        this.agent[i].init.set_idle_cycles($urandom_range(1, 3));
+        this.agent[i].init.set_idle_cycles($urandom_range(1, 3)); // 直接修改run中的idle_cycle
       end
       $display("%s configured objects", this.name);
     endfunction
   endclass: chnl_basic_test
 
-  // USER TODO 4.2
-  // Refer to chnl_basic_test, and extend another 2 tests
-  // chnl_burst_test, chnl_fifo_full_test
-  // each channel send data with idle_cycles == 0
-  // each channel send out 500 data
-  // then to finish the test
   class chnl_burst_test extends chnl_root_test;  // 
     //USER TODO
     function new(int ntrans = 500, string name = "chnl_burst_test");
@@ -173,10 +163,6 @@ package chnl_pkg;
     endfunction
   endclass: chnl_burst_test
 
-  // USER TODO 4.2
-  // The test should be immediately finished when all of channels
-  // have been reached fifo full state, but not all reaching
-  // fifo full at the same time
   class chnl_fifo_full_test extends chnl_root_test;
     // USER TODO
     function new(int ntrans = 1_000_000, string name = "chnl_fifo_full_test");
@@ -273,7 +259,7 @@ module tb4_ref;
   // import defined class from chnl_pkg
   import chnl_pkg::*;
 
-  chnl_intf chnl0_if(.*);
+  chnl_intf chnl0_if(.*);  // 此处已经在agent中例化了init和gen，因此这里不需要例化了
   chnl_intf chnl1_if(.*);
   chnl_intf chnl2_if(.*);
 
